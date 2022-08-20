@@ -19,8 +19,7 @@ def bearer_oauth(r):
 	r.headers["User-Agent"] = "v2FullArchiveSearchPython"
 	return r
 
-
-def connect_to_endpoint(params):
+def connect_to_endpoint(url,params):
 	response = requests.request("GET", search_url, auth=bearer_oauth, params=params)
 	if response.status_code != 200:
 		raise Exception(response.status_code, response.text)
