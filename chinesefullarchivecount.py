@@ -1,6 +1,4 @@
-import requests
-import os
-import sys
+import requests, os, sys, time
 from twittercredentials import set_credentials
 
 set_credentials()
@@ -30,9 +28,8 @@ def connect_to_endpoint(params):
 	return response.json()
 
 def getcounts(langtype):
-	query_params = {'granularity':'day','start_time':'2006-04-01T00:00:00Z'}
-	query_params['query'] = constructquery(langtype)
-	with open(f"{langtype}counts.txt",'a') as f:
+	query_params = {'query':constructquery(langtype),'granularity':'day','start_time':'2006-04-01T00:00:00Z'}
+	with open(f"{langtype}counts.txt",'w') as f:
 		sys.stdout = f
 		json_response = connect_to_endpoint(query_params)
 		while True:
@@ -41,6 +38,7 @@ def getcounts(langtype):
 				json_response = connect_to_endpoint(query_params)
 				for x in json_response['data']:
 					print(x)
+				time.sleep(3)
 			except:
 				break
 
