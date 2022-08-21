@@ -10,9 +10,10 @@ def constructquery(langtype):
 	querystring = "("
 	with open(f"unique{langtype}.txt",'r') as f:
 		for x in f:
+			querystring += x[0]
 			if len(querystring) >= 996:
 				break
-			querystring += x[0] + " OR "
+			querystring += " OR "
 		querystring += f") lang:zh-{langcode} -is:retweet"
 	return querystring
 
