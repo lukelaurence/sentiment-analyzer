@@ -21,7 +21,7 @@ class TaggedCorpus:
             yield TaggedDocument(words=words.split(),tags=[title])
 
 def trainmodel(data):
-	documents = TaggedCorpus(f"{data}.gz")
+	documents = TaggedCorpus(f"{data}.tsv.gz")
 	workers = multiprocessing.cpu_count() - 1
 	model_dbow = Doc2Vec(dm=0,dbow_words=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
 	model_dm = Doc2Vec(dm=1,dm_mean=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
@@ -32,4 +32,4 @@ def trainmodel(data):
 	model_dm.train(documents,total_examples=model_dm.corpus_count,epochs=model_dm.epochs,report_delay=30*60)
 	model_dm.save('doc2vec_dm.model')
 
-trainmodel('all-the-news.tsv')
+trainmodel('all-the-news')
