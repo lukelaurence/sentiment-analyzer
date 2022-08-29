@@ -20,18 +20,16 @@ class TaggedCorpus:
             title, words = line.split('\t')
             yield TaggedDocument(words=words.split(),tags=[title])
 
-documents = TaggedCorpus('all-the-news.tsv.gz')
+def trainmodel(data):
+	documents = TaggedCorpus(f"{data}.gz")
+	workers = multiprocessing.cpu_count() - 1
+	model_dbow = Doc2Vec(dm=0,dbow_words=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
+	model_dm = Doc2Vec(dm=1,dm_mean=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
+	model_dbow.build_vocab(documents,progress_per=500000)
+	model_dm.reset_from(model_dbow)
+	model_dbow.train(documents,total_examples=model_dbow.corpus_count,epochs=model_dbow.epochs,report_delay=30*60)
+	model_dbow.save('doc2vec_dbow.model')
+	model_dm.train(documents,total_examples=model_dm.corpus_count,epochs=model_dm.epochs,report_delay=30*60)
+	model_dm.save('doc2vec_dm.model')
 
-workers = multiprocessing.cpu_count() - 1
-
-model_dbow = Doc2Vec(dm=0,dbow_words=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
-model_dm = Doc2Vec(dm=1,dm_mean=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
-
-model_dbow.build_vocab(documents,progress_per=500000)
-model_dm.reset_from(model_dbow)
-
-model_dbow.train(documents,total_examples=model_dbow.corpus_count,epochs=model_dbow.epochs,report_delay=30*60)
-model_dbow.save('doc2vec_dbow.model')
-
-model_dm.train(documents,total_examples=model_dm.corpus_count,epochs=model_dm.epochs,report_delay=30*60)
-model_dm.save('doc2vec_dm.model')
+trainmodel('all-the-news.tsv')
