@@ -32,10 +32,11 @@ def getjson(query_params):
 	except:
 		return []
 
-def cycledates(beginning,end):
+def cycledates(beginning):
 	wrap = lambda x : x.strftime('%Y-%m-%dT%H:%M:%S.00Z')
 	date = beginning
 	query_params = {'query': '(\\"or\\" OR \\"and\\" OR the OR be OR to OR of OR a OR in OR that OR have OR I OR it OR for OR not OR on OR with OR he OR as OR you OR do OR at OR this OR but OR his OR by OR from OR they OR we OR say OR her OR she OR an OR will OR my OR one OR all OR would OR there OR their OR what OR so OR up OR out OR if OR about OR who OR get OR which OR go OR me OR when OR make OR can OR like OR time OR no OR just OR him OR know OR take OR people OR into OR year OR your OR good OR some OR could OR them OR see OR other OR than OR then OR now OR look OR only OR come OR its OR over OR think OR also OR back OR after OR use OR two OR how OR our OR work OR first OR well OR way OR even OR new OR want OR because OR any OR these OR give OR day OR most OR us) lang:en -is:retweet -is:nullcast','max_results':10,'tweet.fields': 'created_at'}
+	end = datetime.today()
 	while date < end:
 		query_params['start_time']=wrap(date)
 		query_params['end_time']=wrap(date + timedelta(hours=1))
@@ -48,7 +49,7 @@ def cycledates(beginning,end):
 def main():
 	with open('historicoutput.txt','a') as f:
 		sys.stdout = f
-		cycledates(datetime(2006,4,1,0,0,0,0),datetime(2022,8,29,0,0,0,0))
+		cycledates(datetime(2006,4,1,0,0,0,0))
 
 if __name__ == "__main__":
 	main()
