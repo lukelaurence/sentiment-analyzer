@@ -48,7 +48,7 @@ def cycledates(beginning,end):
 def main():
 	with open('historicoutput.txt','a') as f:
 		sys.stdout = f
-		cycledates(datetime(2006,4,1,0,0,0,0),datetime(2022,8,1,0,0,0,0))
+		cycledates(datetime(2006,4,1,0,0,0,0),datetime(2022,8,29,0,0,0,0))
 
 if __name__ == "__main__":
 	main()
