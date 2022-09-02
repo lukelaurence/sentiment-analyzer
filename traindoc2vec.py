@@ -27,9 +27,12 @@ def trainmodel(data):
 	model_dm = Doc2Vec(dm=1,dm_mean=1,vector_size=200,window=8,epochs=10,workers=workers,max_final_vocab=1000000)
 	model_dbow.build_vocab(documents,progress_per=500000)
 	model_dm.reset_from(model_dbow)
+	print("vocab trained")
 	model_dbow.train(documents,total_examples=model_dbow.corpus_count,epochs=model_dbow.epochs,report_delay=30*60)
 	model_dbow.save('doc2vec_dbow.model')
+	print("dbow trained")
 	model_dm.train(documents,total_examples=model_dm.corpus_count,epochs=model_dm.epochs,report_delay=30*60)
 	model_dm.save('doc2vec_dm.model')
+	print("dm trained")
 
 trainmodel('all-the-news')
