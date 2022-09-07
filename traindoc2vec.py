@@ -1,15 +1,15 @@
 from gensim.models.doc2vec import Doc2Vec,TaggedDocument
 import smart_open,multiprocessing,csv,sys
 
-def convertcsv(filename):
-	csv.field_size_limit(1048576)
-	with open(f"{filename}.csv",'r') as f:
-		with open(f"{filename}.tsv",'w') as f2:
-			reader = csv.reader(f)
-			sys.stdout = f2
-			clean = lambda a:' '.join(a.split())
-			for x in reader:
-				print(f"{clean(x[5])}\t{clean(x[6])}")
+# def convertcsv(filename):
+# 	csv.field_size_limit(1048576)
+# 	with open(f"{filename}.csv",'r') as f:
+# 		with open(f"{filename}.tsv",'w') as f2:
+# 			reader = csv.reader(f)
+# 			sys.stdout = f2
+# 			clean = lambda a:' '.join(a.split())
+# 			for x in reader:
+# 				print(f"{clean(x[5])}\t{clean(x[6])}")
 
 class TaggedCorpus:
     def __init__(self,text_path):
@@ -17,7 +17,7 @@ class TaggedCorpus:
 
     def __iter__(self):
         for line in smart_open.open(self.text_path,encoding='utf8'):
-            title, words = line.split('\t')
+            title,words = line.split('\t')
             yield TaggedDocument(words=words.split(),tags=[title])
 
 def trainmodel(data):
@@ -28,9 +28,9 @@ def trainmodel(data):
 	model_dbow.build_vocab(documents,progress_per=500000)
 	model_dm.reset_from(model_dbow)
 	print("vocab trained")
-	model_dbow.train(documents,total_examples=model_dbow.corpus_count,epochs=model_dbow.epochs,report_delay=30*60)
-	model_dbow.save('doc2vec_dbow.model')
-	print("dbow trained")
+	# model_dbow.train(documents,total_examples=model_dbow.corpus_count,epochs=model_dbow.epochs,report_delay=30*60)
+	# model_dbow.save('doc2vec_dbow.model')
+	# print("dbow trained")
 	model_dm.train(documents,total_examples=model_dm.corpus_count,epochs=model_dm.epochs,report_delay=30*60)
 	model_dm.save('doc2vec_dm.model')
 	print("dm trained")
