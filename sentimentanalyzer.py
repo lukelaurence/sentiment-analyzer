@@ -37,14 +37,14 @@ def analyzetweets():
 			addtoset(stopwords,'t','https')
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
 			for x in f:
-				created_at,id,text = x[:-1].split('\t')
-				words = [a for a in text.split() if a not in STOPWORDS and model.__contains__(a)]
+				created_at,id,text = x.split('\t')
+				words = [a for a in text[:-1].split() if a not in STOPWORDS and model.__contains__(a)]
 				if len(words) > 1:
 					meanvec = KeyedVectors.get_mean_vector(model,words,pre_normalize=True,post_normalize=True,ignore_missing=False)
 					differences = []
 					for key,vector in sentimentvectors.items():
 						differences.append(similarity(vector,meanvec))
-					print(created_at,text,*differences,sep='\t')
+					print(created_at,' '.join(words),*differences,sep='\t')
 
 if __name__ == "__main__":
 	analyzetweets()
