@@ -52,7 +52,7 @@ def cycledates(beginning):
 				query_params['start_time']=wrap(date)
 				query_params['end_time']=wrap(date+timedelta(hours=1))
 				results = getjson(query_params)
-				td = time.time() - t
+				td = time.time()-t
 				if td < 3:
 					time.sleep(3-td)
 				t = time.time()

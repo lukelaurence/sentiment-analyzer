@@ -1,8 +1,15 @@
+def containsbad(input):
+	acceptable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'_\n"
+	for x in input:
+		if x not in acceptable:
+			return True
+	return False
+
 def getphrases(sorted = False):
 	phrases = []
 	with open('index_to_key.txt','r') as f:
 		for x in f:
-			if '_' in x and x[-2] != '_' and x[0] != '_':
+			if '_' in x and not containsbad(x) and x[-2] != '_' and x[0] != '_':
 				phrases.append(x) if sorted else print(x,end='')
 	if sorted:
 		phrases.sort(key=len,reverse=True)
@@ -11,7 +18,7 @@ def getphrases(sorted = False):
 
 def getphrasetuples():
 	phrases = []
-	with open('sorted_phrases.txt','r') as phrasefile:
+	with open('phrases.txt','r') as phrasefile:
 		for phrase in phrasefile:
 			p = phrase[:-1]
 			phrases.append((' '+p+' ',' '+p.replace("_"," ")+' '))
