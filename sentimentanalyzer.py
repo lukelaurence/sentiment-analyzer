@@ -1,5 +1,4 @@
 from gensim.models import KeyedVectors
-from gensim.parsing.preprocessing import STOPWORDS
 from gensim import matutils
 import numpy as np
 import os.path
@@ -8,9 +7,9 @@ import sys
 def loadmodel():
 	return KeyedVectors.load_word2vec_format(os.path.join(os.path.dirname(__file__),os.pardir,'GoogleNews-vectors-negative300.bin'),binary=True)
 
-def addtoset(s,*input):
-	for x in input:
-		s.add(x)
+def getstopwords():
+	with open('stopwords.txt','r') as f:
+		return frozenset(x[:-1] for x in f)
 
 def getsentimentvectors(model):
 	sentimentvectors = {}
@@ -33,8 +32,7 @@ def analyzetweets():
 		sys.stdout = f1
 		sentimentvectors = getsentimentvectors(model)
 		with open('preprocessedtweets.tsv','r') as f:
-			stopwords = set(STOPWORDS)
-			addtoset(stopwords,'t','https')
+			stopwords = getstopwords()
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
 			for x in f:
 				created_at,id,text = x.split('\t')
