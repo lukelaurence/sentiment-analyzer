@@ -56,30 +56,39 @@ def get_max_and_min(input):
 			min = x
 	return(max,min)
 
-def preprocesstext(phrases,phraseindicies,term_idxs,input):
+def sorttweets():
+	with open('preprocessedtweets.tsv','r') as f:
+		tweets = []
+		for x in f:
+			tweets.append(tuple(x.split('\t')))
+		tweets.sort(key=lambda a:a[0])
+	for a,b,c in tweets:
+		print(f"{a}\t{b}\t{c}",end='')
+
+def preprocesstext(phrases,phrase_idxs,term_idxs,input):
 	text = strippunctuation(input)
 	l = len(text)
-	p = phrases[phraseindicies[l]:] if term_idxs[0]>l>term_idxs[1] else phrases
+	p = phrases[phrase_idxs[l]:] if term_idxs[0]>l>term_idxs[1] else phrases
 	for underscore,space in p:
 		if space in text:
 			text = text.replace(space,underscore)
 	return text[1:-1]
 
-def preprocess(phrases,phraseindicies,term_idxs,seen,tweet):
+def preprocesstweet(phrases,phrase_idxs,term_idxs,seen,tweet):
 	created_at = tweet[16:40]
 	midvalue = 50+tweet[50:].find("'")
 	id = int(tweet[50:midvalue])
 	if id not in seen:
 		seen.add(id)
 		text = tweet[midvalue+12:-3]
-		text = preprocesstext(phrases,phraseindicies,term_idxs,text)
+		text = preprocesstext(phrases,phrase_idxs,term_idxs,text)
 		print(f"{created_at}\t{id}\t{text}")
 
 def preprocesstweets():
 	phrases = getphrasetuples()
-	phraseindicies = getphraseindicies(phrases)
-	term_idxs = get_max_and_min(phraseindicies.keys())
+	phrase_idxs = getphraseindicies(phrases)
+	term_idxs = get_max_and_min(phrase_idxs.keys())
 	with open('rawtweets.txt','r') as f:
 		seen_ids = set()
 		for x in f:
-			preprocess(phrases,phraseindicies,term_idxs,seen_ids,x)
+			preprocesstweet(phrases,phrase_idxs,term_idxs,seen_ids,x)
