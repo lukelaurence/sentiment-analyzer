@@ -18,18 +18,20 @@ def getphrasetuples():
 	return phrases
 
 def strippunctuation(input):
-	"given a word, takes out punctuation"
 	acceptable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'"
-	output = ""
-	for letter in input:
-		if letter in acceptable:
-			output += letter
-		else:
-			output += ' '
-	return output
+	output = [' '] #space terminators due to underscore-demarcated phrases
+	lastcharspace = True
+	for x in input:
+		out = x if x in acceptable else ' '
+		if lastcharspace and out == ' ':
+			continue
+		lastcharspace = (out == ' ')
+		output.append(out)
+	output.append(' ') #space terminators due to underscore-demarcated phrases
+	return ''.join(output)
 
 def preprocesstext(phrases,input):
-	text = ' '+' '.join(' '.join([strippunctuation(word) for word in input.split()]).split())+' '
+	text = strippunctuation(input)
 	for underscore,space in phrases:
 		if space in text:
 			text = text.replace(space,underscore)
