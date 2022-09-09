@@ -31,8 +31,8 @@ def analyzetweets():
 		with open('preprocessedtweets.tsv','r') as f:
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
 			for x in f:
-				created_at,id,text = x.split('\t')
-				words = [a for a in text[:-1].split() if a not in STOPWORDS and model.__contains__(a)]
+				created_at,id,text = x[:-1].split('\t')
+				words = [a for a in text.split() if a not in STOPWORDS and model.__contains__(a)]
 				if len(words) > 1:
 					meanvec = KeyedVectors.get_mean_vector(model,words,pre_normalize=True,post_normalize=True,ignore_missing=False)
 					differences = []
