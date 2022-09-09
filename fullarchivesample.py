@@ -5,7 +5,7 @@ from random import randint
 import sys
 import time
 from twittercredentials import set_credentials
-from sentimentpreprocessing import getphrasetuples,preprocesstext
+from sentimentpreprocessing import getphrasetuples,getphraseindicies,get_max_and_min,preprocesstext
 
 set_credentials()
 bearer_token = os.environ.get("BEARER_TOKEN")
@@ -44,6 +44,8 @@ def cycledates(beginning):
 	end = datetime.today()-timedelta(days=2)
 	unique_ids = get_ids()
 	phrases = getphrasetuples()
+	phraseindicies = getphraseindicies(phrases)
+	term_idxs = get_max_and_min(phraseindicies.keys())
 	f = sys.stdout
 	t = time.time()
 	with open('rawtweets.txt','a') as f1:
@@ -65,7 +67,7 @@ def cycledates(beginning):
 						sys.stdout = f1
 						print(x)
 						sys.stdout = f2
-						print(f"{x['created_at']}\t{id}\t{preprocesstext(phrases,x['text'])}")
+						print(f"{x['created_at']}\t{id}\t{preprocesstext(phrases,phraseindicies,term_idxs,x['text'])}")
 						sys.stdout = f
 				date += timedelta(hours=randint(1,720),seconds=randint(1,2592000))
 
