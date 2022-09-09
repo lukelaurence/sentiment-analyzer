@@ -68,4 +68,5 @@ def cycledates(beginning):
 						sys.stdout = f
 				date += timedelta(hours=randint(1,720),seconds=randint(1,2592000))
 
-cycledates(datetime(randint(2006,2007),randint(4,12),randint(1,28),randint(0,23),randint(0,59),0,0))
+if __name__ == "__main__":
+	cycledates(datetime(randint(2006,2007),randint(4,12),randint(1,28),randint(0,23),randint(0,59),0,0))
