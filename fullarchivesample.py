@@ -44,12 +44,18 @@ def cycledates(beginning):
 	end = datetime.today()-timedelta(days=2)
 	unique_ids = get_ids()
 	phrases = getphrasetuples()
+	f = sys.stdout
+	t = time.time()
 	with open('historicoutput.txt','a') as f1:
 		with open('preprocessedtweets.tsv','a') as f2:
 			while date < end:
 				query_params['start_time']=wrap(date)
 				query_params['end_time']=wrap(date+timedelta(hours=1))
 				results = getjson(query_params)
+				td = time.time() - t
+				if td < 3:
+					time.sleep(3-td)
+				t = time.time()
 				for x in results:
 					id = x['id']
 					if id in unique_ids:
@@ -60,7 +66,7 @@ def cycledates(beginning):
 						print(x)
 						sys.stdout = f2
 						print(f"{x['created_at']}\t{id}\t{preprocesstext(phrases,x['text'])}")
-				date += timedelta(hours=randint(1,168),seconds=randint(0,3599))
-				time.sleep(3)
+						sys.stdout = f
+				date += timedelta(hours=randint(1,720),seconds=randint(1,2592000))
 
-cycledates(datetime(2006,4,1,0,0,0,0))
+cycledates(datetime(2006,randint(4,12),randint(1,28),randint(0,23),randint(0,59),0,0))
