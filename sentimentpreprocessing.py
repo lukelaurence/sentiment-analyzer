@@ -60,5 +60,3 @@ def preprocesstweets():
 		seen_ids = set()
 		for x in f:
 			preprocess(phrases,seen_ids,x)
-
-getphrases(sorted=True)
