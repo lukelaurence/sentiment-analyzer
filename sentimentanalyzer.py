@@ -8,6 +8,10 @@ import sys
 def loadmodel():
 	return KeyedVectors.load_word2vec_format(os.path.join(os.path.dirname(__file__),os.pardir,'GoogleNews-vectors-negative300.bin'),binary=True)
 
+def addtoset(s,*input):
+	for x in input:
+		s.add(x)
+
 def getsentimentvectors(model):
 	sentimentvectors = {}
 	with open('sentiment_vectors.tsv','r') as f:
@@ -29,6 +33,8 @@ def analyzetweets():
 		sys.stdout = f1
 		sentimentvectors = getsentimentvectors(model)
 		with open('preprocessedtweets.tsv','r') as f:
+			stopwords = set(STOPWORDS)
+			addtoset(stopwords,'t','https')
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
 			for x in f:
 				created_at,id,text = x[:-1].split('\t')
