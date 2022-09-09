@@ -5,11 +5,11 @@ def containsbad(input):
 			return True
 	return False
 
-def getphrases(sorted = False):
+def getphrases(sorted=False):
 	phrases = []
 	with open('index_to_key.txt','r') as f:
 		for x in f:
-			if '_' in x and not containsbad(x) and x[-2] != '_' and x[0] != '_':
+			if '_' in x and not containsbad(x) and '__' not in x and x[-2] != '_' and x[0] != '_':
 				phrases.append(x) if sorted else print(x,end='')
 	if sorted:
 		phrases.sort(key=len,reverse=True)
@@ -26,7 +26,7 @@ def getphrasetuples():
 
 def strippunctuation(input):
 	acceptable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'"
-	output = [' '] #space terminators due to underscore-demarcated phrases
+	output = [' ']
 	lastcharspace = True
 	for x in input:
 		out = x if x in acceptable else ' '
@@ -34,7 +34,7 @@ def strippunctuation(input):
 			continue
 		lastcharspace = (out == ' ')
 		output.append(out)
-	output.append(' ') #space terminators due to underscore-demarcated phrases
+	output.append(' ')
 	return ''.join(output)
 
 def preprocesstext(phrases,input):
@@ -56,10 +56,9 @@ def preprocess(phrases,seen,tweet):
 
 def preprocesstweets():
 	phrases = getphrasetuples()
-	with open('historicoutput.txt','r') as f:
+	with open('rawtweets.txt','r') as f:
 		seen_ids = set()
 		for x in f:
 			preprocess(phrases,seen_ids,x)
 
-# if __name__ == "__main__":
-# 	main()
+getphrases(sorted=True)

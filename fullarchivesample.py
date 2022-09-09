@@ -46,7 +46,7 @@ def cycledates(beginning):
 	phrases = getphrasetuples()
 	f = sys.stdout
 	t = time.time()
-	with open('historicoutput.txt','a') as f1:
+	with open('rawtweets.txt','a') as f1:
 		with open('preprocessedtweets.tsv','a') as f2:
 			while date < end:
 				query_params['start_time']=wrap(date)
