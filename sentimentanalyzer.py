@@ -29,10 +29,10 @@ def similarity(v1,v2):
 def analyzetweets():
 	model = loadmodel()
 	sentimentvectors = getsentimentvectors(model)
+	stopwords = getstopwords()
 	with open('sentimentanalysis.tsv','w') as f1:
 		sys.stdout = f1
 		with open('preprocessedtweets.tsv','r') as f:
-			stopwords = getstopwords()
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
 			for x in f:
 				created_at,id,text = x.split('\t')
