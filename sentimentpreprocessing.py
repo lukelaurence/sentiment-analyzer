@@ -65,25 +65,6 @@ def sorttweets():
 	for a,b,c in tweets:
 		print(f"{a}\t{b}\t{c}",end='')
 
-def getaggregates(interval='second'):
-	s = {'second':None,'minute':16,'hour':13,'day':10,'month':7,'year':4}[interval]
-	with open('sentimentanalysis.tsv','r') as f:
-		header = next(f).split('\t')
-		print(header[0],*header[2:],sep='\t',end='')
-		totals,counts = {},{}
-		for x in f:
-			created_at,text,*vecs = x[:-1].split('\t')
-			vecs = list(map(lambda f:float(f),vecs))
-			date = created_at[:s]
-			if date not in totals:
-				totals[date] = vecs
-				counts[date] = 1
-			else:
-				totals[date] = [a + b for a,b in zip(totals[date],vecs)]
-				counts[date] += 1
-		for day,count in counts.items():
-			print(day,*map(lambda c:c/count,totals[day]),sep='\t')
-
 def preprocesstext(phrases,phrase_idxs,term_idxs,input):
 	text = strippunctuation(input)
 	l = len(text)

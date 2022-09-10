@@ -15,7 +15,7 @@ def getsentimentvectors(model):
 	sentimentvectors = {}
 	with open('sentiment_vectors.tsv','r') as f:
 		for x in f:
-			head,*tail = x.split('\t')[:-1]
+			head,*tail = [a for a in x.split('\t')[:-1] if a]
 			for y in tail:
 				if not model.__contains__(y):
 					raise Exception(f"{y} is not in model")
@@ -28,9 +28,9 @@ def similarity(v1,v2):
 
 def analyzetweets():
 	model = loadmodel()
+	sentimentvectors = getsentimentvectors(model)
 	with open('sentimentanalysis.tsv','w') as f1:
 		sys.stdout = f1
-		sentimentvectors = getsentimentvectors(model)
 		with open('preprocessedtweets.tsv','r') as f:
 			stopwords = getstopwords()
 			print("created at","text",*sentimentvectors.keys(),sep='\t')
@@ -44,5 +44,27 @@ def analyzetweets():
 						differences.append(similarity(vector,meanvec))
 					print(created_at,' '.join(words),*differences,sep='\t')
 
+def getaggregates(interval='second'):
+	s = {'second':None,'minute':16,'hour':13,'day':10,'month':7,'year':4}[interval]
+	with open('sentimentanalysis.tsv','r') as f1:
+		with open(f"sentimentaggregates{interval}s.tsv",'w') as f2:
+			sys.stdout = f2
+			header = next(f1).split('\t')
+			print(header[0],*header[2:],sep='\t',end='')
+			totals,counts = {},{}
+			for x in f1:
+				created_at,text,*vecs = x[:-1].split('\t')
+				vecs = list(map(lambda f:float(f),vecs))
+				date = created_at[:s]
+				if date not in totals:
+					totals[date] = vecs
+					counts[date] = 1
+				else:
+					totals[date] = [a + b for a,b in zip(totals[date],vecs)]
+					counts[date] += 1
+			for day,count in counts.items():
+				print(day,*map(lambda c:c/count,totals[day]),sep='\t')
+
 if __name__ == "__main__":
 	analyzetweets()
+	getaggregates('month')
