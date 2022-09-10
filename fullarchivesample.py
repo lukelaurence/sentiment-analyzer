@@ -64,7 +64,7 @@ def cycledates(beginning):
 						sys.stdout = f1
 						print(x)
 						sys.stdout = f2
-						print(f"{x['created_at']}\t{id}\t{preprocesstext(phrases,phraseindicies,term_idxs,x['text'])}")
+						print(f"{x['created_at'][:19]}\t{id}\t{preprocesstext(phrases,phraseindicies,term_idxs,x['text'])}")
 						sys.stdout = f
 				date += timedelta(hours=randint(1,720),seconds=randint(1,2592000))
 
