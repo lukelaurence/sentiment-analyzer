@@ -14,12 +14,15 @@ def getstopwords():
 def getsentimentvectors(model):
 	sentimentvectors = {}
 	with open('sentiment_vectors.tsv','r') as f:
-		for x in f:
-			head,*tail = [a for a in x.split('\t')[:-1] if a]
+		for line in f:
+			head,*tail = [cell for cell in line.split('\t')[:-1] if cell]
+			weightlist = []
 			for y in tail:
-				if not model.__contains__(y):
-					raise Exception(f"{y} is not in model")
-			sentimentvectors[head] = KeyedVectors.get_mean_vector(model,tail,pre_normalize=True,post_normalize=True,ignore_missing=False)
+				word,*weight = y.split(' ')
+				if not model.__contains__(word):
+					raise Exception(f"{word} is not in model")
+				weightlist.append(float(weight[0]) if weight else 1.0)
+			sentimentvectors[head] = KeyedVectors.get_mean_vector(model,tail,np.array(weightlist),True,True,False)
 	return sentimentvectors
 
 def similarity(v1,v2):
