@@ -16,13 +16,14 @@ def getsentimentvectors(model):
 	with open('sentiment_vectors.tsv','r') as f:
 		for line in f:
 			head,*tail = [cell for cell in line.split('\t')[:-1] if cell]
-			weightlist = []
+			words,weights = [],[]
 			for y in tail:
 				word,*weight = y.split(' ')
 				if not model.__contains__(word):
 					raise Exception(f"{word} is not in model")
-				weightlist.append(float(weight[0]) if weight else 1.0)
-			sentimentvectors[head] = KeyedVectors.get_mean_vector(model,tail,np.array(weightlist),True,True,False)
+				words.append(word)
+				weights.append(float(weight[0]) if weight else 1.0)
+			sentimentvectors[head] = KeyedVectors.get_mean_vector(model,words,np.array(weights),True,True,False)
 	return sentimentvectors
 
 def similarity(v1,v2):
