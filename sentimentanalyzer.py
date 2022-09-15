@@ -48,7 +48,7 @@ def analyzetweets():
 						differences.append(similarity(vector,meanvec))
 					print(created_at,' '.join(words),*differences,sep='\t')
 
-def getaggregates(interval='second'):
+def getaggregates(interval='second',mindate=None,normalize=False):
 	s = {'second':None,'minute':16,'hour':13,'day':10,'month':7,'year':4}[interval]
 	with open('sentimentanalysis.tsv','r') as f1:
 		with open(f"sentimentaggregates{interval}s.tsv",'w') as f2:
@@ -58,17 +58,24 @@ def getaggregates(interval='second'):
 			totals,counts = {},{}
 			for x in f1:
 				created_at,text,*vecs = x[:-1].split('\t')
+				if mindate and created_at < mindate:
+					continue
 				vecs = list(map(lambda f:float(f),vecs))
 				date = created_at[:s]
 				if date not in totals:
 					totals[date] = vecs
 					counts[date] = 1
 				else:
-					totals[date] = [a + b for a,b in zip(totals[date],vecs)]
+					totals[date] = [a+b for a,b in zip(totals[date],vecs)]
 					counts[date] += 1
+			initials = None
 			for day,count in counts.items():
-				print(day,*map(lambda c:c/count,totals[day]),sep='\t')
+				averages = list(map(lambda c:c/count,totals[day]))
+				if not initials:
+					initials = list(map(lambda c:c-0.05,averages))
+				vectors = [a-b for a,b in zip(averages,initials)] if normalize else averages
+				print(day,*vectors,sep='\t')
 
 if __name__ == "__main__":
 	analyzetweets()
-	getaggregates('month')
+	getaggregates(interval='month',mindate='2009',normalize=True)
