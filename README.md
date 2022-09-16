@@ -1,6 +1,6 @@
 # sentiment-analyzer
 
-** This repository currently consists of 3 parts:
+This repository currently consists of 3 parts:
 
 ## fullarchivesample
 A program that uses Twitter's API to randomly sample Tweets from 2006 to the current day. (Technically 2 days before the current day.)
